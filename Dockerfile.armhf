@@ -34,7 +34,7 @@ RUN apt update && \
 			rtl-sdr \
 			librtlsdr-dev
 
-RUN curl -o /tmp/spyserver.tar.gz -L "https://airspy.com/downloads/spyserver-linux-arm32.tgz" && \
+RUN curl -o /tmp/spyserver.tar.gz -L "https://airspy.com/downloads/spyserver-arm32.tgz" && \
 	tar xfz /tmp/spyserver.tar.gz -C /app && \
 	rm /tmp/spyserver.tar.gz && \
   mv /app/spyserver.config /defaults
