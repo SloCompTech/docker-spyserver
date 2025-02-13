@@ -39,6 +39,29 @@ RUN curl -o /tmp/spyserver.tar.gz -L "https://airspy.com/downloads/spyserver-lin
 	rm /tmp/spyserver.tar.gz && \
   mv /app/spyserver.config /defaults
 
+# Install RTL-SDR v4 Driver
+RUN apt install -y \
+      libusb-1.0-0-dev \
+      git \
+      cmake \
+      pkg-config && \
+    cd /tmp && \
+    git clone https://github.com/rtlsdrblog/rtl-sdr-blog && \
+    cd rtl-sdr-blog && \
+    mkdir build && \
+    cd build && \
+    cmake ../ -DINSTALL_UDEV_RULES=ON && \
+    make && \
+    sudo make install && \
+    sudo cp ../rtl-sdr.rules /etc/udev/rules.d/ && \
+    sudo ldconfig && \
+    echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf && \
+    apt remove --autoremove -y \
+      git \
+      cmake \
+      pkg-config && \
+    rm -r /tmp/rtl-sdr-blog
+
 #
 #	Add local files to image
 #
