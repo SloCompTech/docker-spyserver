@@ -1,0 +1,7 @@
+#!/command/with-contenv bash
+
+if [ -n "$SKIP_APP" ]; then
+	exit 0
+fi
+
+exec /app/spyserver /config/spyserver.config
