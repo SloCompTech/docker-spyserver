@@ -1,0 +1,34 @@
+name: Deploy to DockerHub
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+   docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Aquire build date
+        id: bdate
+        run: |
+          echo "BUILD_DATE=$(date +%Y%m%d%H%M)" >> "$GITHUB_OUTPUT"
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+            BUILD_DATE=${{ steps.bdate.outputs.BUILD_DATE }}
+            VCS_REF=${{ github.sha }}
+            VCS_SRC="https://github.com/SloCompTech/docker-spyserver"
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: slocomptech/spyserver:${{ github.ref_name }},slocomptech/spyserver:latest
