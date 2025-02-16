@@ -9,6 +9,10 @@ FROM ubuntu:plucky-20241213
 #
 ARG BUILD_DATE
 ARG S6_OVERLAY_VERSION='3.2.0.2'
+ARG SPYSERVER_AMD64_ID='4262'
+ARG SPYSERVER_ARM64_ID='5795'
+ARG SPYSERVER_ARMHF_ID='4247'
+ARG TARGETPLATFORM
 ARG VCS_REF
 ARG VCS_SRC
 ARG VERSION
@@ -42,7 +46,8 @@ LABEL maintainer="martin.dagarin@gmail.com" \
 
 # Install packages
 RUN apt update && \
-    apt install -y \
+    apt upgrade -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y \
       bash \
       ca-certificates \
       cmake \
@@ -98,11 +103,11 @@ RUN case ${TARGETPLATFORM} in \
 #
 # Install SpyServer
 # @see https://airspy.com/download/
-# TODO: PLATFORM CHANGE
+#
 RUN case ${TARGETPLATFORM} in \
-    "linux/amd64")  FILE_URL="https://airspy.com/downloads/spyserver-linux-x64.tgz"  ;; \
-    "linux/arm64")  FILE_URL="https://airspy.com/downloads/spyserver-linux-arm64.tgz"  ;; \
-    "linux/arm/v7")  FILE_URL="https://airspy.com/downloads/spyserver-linux-arm32.tgz"  ;; \
+    "linux/amd64")  FILE_URL="https://airspy.com/?ddownload=${SPYSERVER_AMD64_ID}"  ;; \
+    "linux/arm64")  FILE_URL="https://airspy.com/?ddownload=${SPYSERVER_ARM64_ID}"  ;; \
+    "linux/arm/v7")  FILE_URL="https://airspy.com/?ddownload=${SPYSERVER_ARMHF_ID}"  ;; \
     *) exit 1 ;;\
   esac && \
   curl -o /tmp/spyserver.tar.gz -L "$FILE_URL" && \
