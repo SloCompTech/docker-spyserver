@@ -86,7 +86,7 @@ RUN case ${TARGETPLATFORM} in \
     "linux/amd64") S6_OVERLAY_ARCH='x86_64'  ;; \
     "linux/arm64")  S6_OVERLAY_ARCH='aarch64'  ;; \
     "linux/arm/v7")  S6_OVERLAY_ARCH='armhf'  ;; \
-    *) S6_OVERLAY_ARCH='x86_64' ;;\
+    *) exit 1 ;;\
     esac && \
     curl -o /tmp/s6-overlay-noarch.tar.xz -L "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz" && \
     tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
@@ -103,7 +103,7 @@ RUN case ${TARGETPLATFORM} in \
     "linux/amd64")  FILE_URL="https://airspy.com/downloads/spyserver-linux-x64.tgz"  ;; \
     "linux/arm64")  FILE_URL="https://airspy.com/downloads/spyserver-linux-arm64.tgz"  ;; \
     "linux/arm/v7")  FILE_URL="https://airspy.com/downloads/spyserver-linux-arm32.tgz"  ;; \
-    *) FILE_URL="https://airspy.com/downloads/spyserver-linux-x64.tgz" ;;\
+    *) exit 1 ;;\
   esac && \
   curl -o /tmp/spyserver.tar.gz -L "$FILE_URL" && \
   tar xfz /tmp/spyserver.tar.gz -C /app && \
